@@ -63,4 +63,4 @@ Click the extension icon anytime to see your monthly budget summary.
 ## Requirements
 
 - Google Chrome browser
-- An existing [Household](https://amsterhamster.com) account
+- An existing [Household](https://amsterhamster.com) account.
