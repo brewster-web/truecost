@@ -1,6 +1,6 @@
 import { getToken, getScope } from "./auth.js";
 
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://truecost-production.up.railway.app";
 
 export async function fetchBudgetSummary() {
   const token = await getToken();

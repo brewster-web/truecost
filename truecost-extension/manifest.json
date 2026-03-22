@@ -5,9 +5,11 @@
   "description": "Your budget, watching your back while you shop.",
   "permissions": ["storage", "alarms"],
   "host_permissions": [
-    "http://localhost:8000/*",
-    "http://localhost:3001/*",
-    "https://www.amazon.in/*"
+    "https://truecost-production.up.railway.app/*",
+    "http://api.amsterhamster.com/*",
+    "https://www.amazon.in/*",
+    "https://www.flipkart.com/*",
+    "https://www.myntra.in/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",

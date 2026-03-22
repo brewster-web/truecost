@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://truecost-production.up.railway.app";
 const TOKEN_KEY = "truecost_token";
 
 // ── Fetch budget and update badge ──────────────────────────────

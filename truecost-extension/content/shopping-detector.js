@@ -32,7 +32,7 @@ async function getNudge(price) {
 
   if (!token) return null;
 
-  const response = await fetch("http://localhost:8000/api/nudge/check", {
+  const response = await fetch("https://truecost-production.up.railway.app/api/nudge/check", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
