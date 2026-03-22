@@ -42,14 +42,13 @@ async def get_budget_and_spent(db: AsyncSession, user_id: int, scope: str = "per
             budget_row = budget_result.fetchone()
             budget = float(budget_row[0]) if budget_row else 0
 
-            # ALL household members' spending
+            # Household spent — only transactions logged under this household
             spent_result = await db.execute(
                 text("""
-                    SELECT COALESCE(SUM(t.amount), 0)
-                    FROM transactions t
-                    JOIN household_members hm ON t.user_id = hm.user_id
-                    WHERE hm.household_id = :household_id
-                    AND DATE_TRUNC('month', t.date) = :month
+                    SELECT COALESCE(SUM(amount), 0)
+                    FROM transactions
+                    WHERE household_id = :household_id
+                    AND DATE_TRUNC('month', date) = :month
                 """),
                 {"household_id": household_id, "month": current_month}
             )
@@ -77,11 +76,13 @@ async def get_budget_and_spent(db: AsyncSession, user_id: int, scope: str = "per
     budget_row = budget_result.fetchone()
     budget = float(budget_row[0]) if budget_row else 0
 
+    # Personal spent — only transactions with no household
     spent_result = await db.execute(
         text("""
             SELECT COALESCE(SUM(amount), 0)
             FROM transactions
             WHERE user_id = :user_id
+            AND household_id IS NULL
             AND DATE_TRUNC('month', date) = :month
         """),
         {"user_id": user_id, "month": current_month}
