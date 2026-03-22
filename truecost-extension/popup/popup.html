@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>TrueCost</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div id="app">
+
+      <!-- Loading state -->
+      <div id="loading" class="screen">
+        <p>Loading...</p>
+      </div>
+
+      <!-- Not logged in state -->
+      <div id="login" class="screen hidden">
+        <h2>TrueCost</h2>
+        <p class="subtitle">Sign in with your Household account</p>
+        <input id="username" type="text" placeholder="Username" />
+        <input id="password" type="password" placeholder="Password" />
+        <button id="login-btn">Sign In</button>
+        <p id="login-error" class="error hidden"></p>
+      </div>
+
+      <!-- Dashboard state -->
+      <div id="dashboard" class="screen hidden">
+
+        <div class="header">
+          <span class="title">TrueCost</span>
+          <button id="logout-btn" class="logout">Sign out</button>
+        </div>
+
+        <div class="scope-toggle">
+          <button id="scope-personal" class="scope-btn active">Personal</button>
+          <button id="scope-household" class="scope-btn">Household</button>
+        </div>
+
+        <div class="budget-card">
+          <p class="card-label">Remaining this month</p>
+          <p id="remaining-amount" class="remaining">₹0</p>
+          <p id="percentage-used" class="percentage">0% used</p>
+        </div>
+
+        <div class="progress-bar">
+          <div id="progress-fill" class="fill"></div>
+        </div>
+
+        <p id="budget-sub" class="budget-sub"></p>
+
+      </div>
+
+    </div>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>

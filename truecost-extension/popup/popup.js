@@ -1,0 +1,139 @@
+import { getToken, setToken, removeToken, getScope, setScope } from "../lib/auth.js";
+import { fetchBudgetSummary } from "../lib/api.js";
+
+// ── Screens ────────────────────────────────────────────────────
+const screens = {
+  loading:   document.getElementById("loading"),
+  login:     document.getElementById("login"),
+  dashboard: document.getElementById("dashboard"),
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.add("hidden"));
+  screens[name].classList.remove("hidden");
+}
+
+function formatAmount(amount) {
+  return "₹" + Math.abs(amount).toLocaleString("en-IN");
+}
+
+// ── Scope Toggle ───────────────────────────────────────────────
+const scopePersonalBtn  = document.getElementById("scope-personal");
+const scopeHouseholdBtn = document.getElementById("scope-household");
+
+async function initScope() {
+  const scope = await getScope();
+  updateScopeButtons(scope);
+}
+
+function updateScopeButtons(scope) {
+  if (scope === "personal") {
+    scopePersonalBtn.classList.add("active");
+    scopeHouseholdBtn.classList.remove("active");
+  } else {
+    scopeHouseholdBtn.classList.add("active");
+    scopePersonalBtn.classList.remove("active");
+  }
+}
+
+scopePersonalBtn.addEventListener("click", async () => {
+  await setScope("personal");
+  updateScopeButtons("personal");
+  await loadDashboard();
+});
+
+scopeHouseholdBtn.addEventListener("click", async () => {
+  await setScope("household");
+  updateScopeButtons("household");
+  await loadDashboard();
+});
+
+// ── Login ──────────────────────────────────────────────────────
+const loginBtn   = document.getElementById("login-btn");
+const logoutBtn  = document.getElementById("logout-btn");
+const loginError = document.getElementById("login-error");
+
+loginBtn.addEventListener("click", async () => {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!username || !password) {
+    loginError.textContent = "Please enter username and password";
+    loginError.classList.remove("hidden");
+    return;
+  }
+
+  loginBtn.textContent = "Signing in...";
+  loginError.classList.add("hidden");
+
+  try {
+    const response = await fetch("http://localhost:3001/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Login failed");
+
+    await setToken(data.data.token);
+    await loadDashboard();
+  } catch (err) {
+    loginError.textContent = err.message;
+    loginError.classList.remove("hidden");
+    loginBtn.textContent = "Sign In";
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  await removeToken();
+  showScreen("login");
+});
+
+document.getElementById("password").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") loginBtn.click();
+});
+
+document.getElementById("username").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") document.getElementById("password").focus();
+});
+
+// ── Dashboard ──────────────────────────────────────────────────
+async function loadDashboard() {
+  showScreen("loading");
+  await initScope();
+
+  try {
+    const data = await fetchBudgetSummary();
+
+    const pct   = data.percentage_used;
+    const color = pct >= 100 ? "#c9372c"
+                : pct >= 90  ? "#e07b39"
+                : pct >= 70  ? "#d4a017"
+                : "#2d8a4e";
+
+    document.getElementById("remaining-amount").textContent = formatAmount(data.remaining);
+    document.getElementById("percentage-used").textContent  = pct + "% used";
+    document.getElementById("progress-fill").style.width      = Math.min(pct, 100) + "%";
+    document.getElementById("progress-fill").style.background = color;
+    document.getElementById("budget-sub").textContent =
+      `${formatAmount(data.spent)} spent of ${formatAmount(data.budget)}`;
+
+    showScreen("dashboard");
+  } catch (err) {
+    await removeToken();
+    showScreen("login");
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────
+async function init() {
+  const token = await getToken();
+  if (token) {
+    await loadDashboard();
+  } else {
+    showScreen("login");
+  }
+}
+
+init();
