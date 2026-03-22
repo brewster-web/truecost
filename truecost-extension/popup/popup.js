@@ -104,20 +104,41 @@ async function loadDashboard() {
   await initScope();
 
   try {
-    const data = await fetchBudgetSummary();
+    const data     = await fetchBudgetSummary();
+    const pct      = data.percentage_used;
+    const remaining = data.remaining;
+    const isOverBudget = remaining < 0;
 
-    const pct   = data.percentage_used;
     const color = pct >= 100 ? "#c9372c"
                 : pct >= 90  ? "#e07b39"
                 : pct >= 70  ? "#d4a017"
                 : "#2d8a4e";
 
-    document.getElementById("remaining-amount").textContent = formatAmount(data.remaining);
-    document.getElementById("percentage-used").textContent  = pct + "% used";
+    // Remaining amount
+    document.getElementById("remaining-amount").textContent = isOverBudget
+      ? `-${formatAmount(remaining)}`
+      : formatAmount(remaining);
+    document.getElementById("remaining-amount").style.color = isOverBudget
+      ? "#c9372c"
+      : "#ffffff";
+
+    // Percentage
+    document.getElementById("percentage-used").textContent = pct + "% used";
+    document.getElementById("percentage-used").style.color = isOverBudget
+      ? "#c9372c"
+      : "rgba(255,255,255,0.5)";
+
+    // Progress bar
     document.getElementById("progress-fill").style.width      = Math.min(pct, 100) + "%";
     document.getElementById("progress-fill").style.background = color;
-    document.getElementById("budget-sub").textContent =
-      `${formatAmount(data.spent)} spent of ${formatAmount(data.budget)}`;
+
+    // Sub text
+    document.getElementById("budget-sub").textContent = isOverBudget
+      ? `⚠️ Over budget by ${formatAmount(remaining)}`
+      : `${formatAmount(data.spent)} spent of ${formatAmount(data.budget)}`;
+    document.getElementById("budget-sub").style.color = isOverBudget
+      ? "#c9372c"
+      : "#999";
 
     showScreen("dashboard");
   } catch (err) {
