@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "TrueCost",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Your budget, watching your back while you shop.",
   "permissions": ["storage", "alarms"],
   "host_permissions": [
