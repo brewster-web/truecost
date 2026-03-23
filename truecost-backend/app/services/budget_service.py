@@ -33,11 +33,11 @@ async def get_budget_and_spent(db: AsyncSession, user_id: int, scope: str = "per
             budget_result = await db.execute(
                 text("""
                     SELECT amount FROM monthly_budget
-                    WHERE user_id = :user_id
-                    AND household_id = :household_id
+                    WHERE household_id = :household_id
                     AND month = :month
+                    LIMIT 1
                 """),
-                {"user_id": user_id, "household_id": household_id, "month": current_month}
+                {"household_id": household_id, "month": current_month}
             )
             budget_row = budget_result.fetchone()
             budget = float(budget_row[0]) if budget_row else 0
