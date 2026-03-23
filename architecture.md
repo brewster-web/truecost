@@ -1,7 +1,7 @@
 # TrueCost — Architecture Document
 
-**Last Updated:** 2026-03-22
-**Status:** Phase 1 — Project Setup
+**Last Updated:** 2026-03-23
+**Status:** MVP Complete — Deployed
 
 ---
 

@@ -12,4 +12,6 @@ requirements
 .DS_Store
 
 # extension
-truecost-externsion.zip
+truecost-externsion.zip*.zip
+CLAUDE.md
+context.md
