@@ -69,12 +69,15 @@ loginBtn.addEventListener("click", async () => {
   try {
     const response = await fetch("https://api.amsterhamster.com/api/auth/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Client": "extension",       // tells backend to include token in JSON body
+      },
       body: JSON.stringify({ username, password }),
     });
 
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Login failed");
+    if (!response.ok) throw new Error(data.error || data.message || "Login failed");
 
     await setToken(data.data.token);
     await loadDashboard();
